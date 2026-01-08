@@ -133,6 +133,133 @@ document.addEventListener("DOMContentLoaded", function () {
     onScroll();
   }
 
+  // ===== PARALLAX CAROUSEL MODULE =====
+  (function initParallaxCarousel() {
+    const parallaxSection = document.querySelector('.parallax-menu-section');
+    if (!parallaxSection) return;
+
+    // Parallax background layers
+    const layerFar = document.querySelector('.parallax-layer--far');
+    const layerMid = document.querySelector('.parallax-layer--mid');
+    const layerNear = document.querySelector('.parallax-layer--near');
+
+    // Parallax scroll effect
+    let ticking = false;
+    function updateParallax() {
+      const scrollY = window.scrollY;
+      const sectionTop = parallaxSection.offsetTop;
+      const offset = scrollY - sectionTop;
+
+      if (layerFar) layerFar.style.transform = `translateY(${offset * 0.1}px)`;
+      if (layerMid) layerMid.style.transform = `translateY(${offset * 0.3}px)`;
+      if (layerNear) layerNear.style.transform = `translateY(${offset * 0.5}px)`;
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Card text sweep animations with IntersectionObserver
+    const menuCards = document.querySelectorAll('.menu-card');
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          entry.target.classList.add('is-active');
+        }
+      });
+    }, {
+      threshold: 0.5,
+      rootMargin: '0px'
+    });
+
+    menuCards.forEach(card => cardObserver.observe(card));
+
+    // Carousel navigation and dots
+    const carouselRows = document.querySelectorAll('.carousel-row');
+
+    carouselRows.forEach(row => {
+      const track = row.querySelector('.carousel-track');
+      const prevBtn = row.querySelector('.carousel-nav--prev');
+      const nextBtn = row.querySelector('.carousel-nav--next');
+      const dotsContainer = row.querySelector('.carousel-dots');
+      const cards = row.querySelectorAll('.menu-card');
+
+      if (!track || cards.length === 0) return;
+
+      // Create dots
+      if (dotsContainer) {
+        cards.forEach((_, idx) => {
+          const dot = document.createElement('button');
+          dot.className = 'carousel-dot' + (idx === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', `Go to slide ${idx + 1}`);
+          dot.addEventListener('click', () => {
+            const cardWidth = cards[0].offsetWidth + 24; // card width + gap
+            track.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+          });
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      // Update active dot on scroll
+      let scrollTimeout;
+      track.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const scrollLeft = track.scrollLeft;
+          const cardWidth = cards[0].offsetWidth + 24;
+          const activeIndex = Math.round(scrollLeft / cardWidth);
+
+          if (dotsContainer) {
+            dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+              dot.classList.toggle('active', idx === activeIndex);
+            });
+          }
+        }, 100);
+      }, { passive: true });
+
+      // Arrow navigation
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          const cardWidth = cards[0].offsetWidth + 24;
+          track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          const cardWidth = cards[0].offsetWidth + 24;
+          track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        });
+      }
+
+      // Touch swipe enhancement (for mobile)
+      let startX = 0;
+      let scrollStart = 0;
+
+      track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX;
+        scrollStart = track.scrollLeft;
+      }, { passive: true });
+
+      track.addEventListener('touchmove', (e) => {
+        const diff = startX - e.touches[0].pageX;
+        track.scrollLeft = scrollStart + diff;
+      }, { passive: true });
+
+      track.addEventListener('touchend', () => {
+        // Snap to nearest card
+        const cardWidth = cards[0].offsetWidth + 24;
+        const targetIndex = Math.round(track.scrollLeft / cardWidth);
+        track.scrollTo({ left: targetIndex * cardWidth, behavior: 'smooth' });
+      }, { passive: true });
+    });
+  })();
+
   // ===== CART PERSISTENCE =====
   function saveCart() {
     try {
@@ -558,18 +685,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ===== MENU ITEMS WIRING =====
-  document.querySelectorAll(".menu-item").forEach(itemEl => {
+  // Support both old .menu-item and new .menu-card classes
+  document.querySelectorAll(".menu-item, .menu-card").forEach(itemEl => {
     const itemId = itemEl.getAttribute("data-item-id");
     const price = parseFloat(itemEl.getAttribute("data-price") || "0");
 
+    // Support both old and new class naming conventions
     const name =
       itemEl.querySelector(".menu-item-name-text")?.textContent.trim() ||
       itemEl.querySelector(".menu-item-name")?.textContent.trim() ||
+      itemEl.querySelector(".menu-card__title")?.textContent.trim() ||
       "Menu item";
 
     const qtyInput = itemEl.querySelector(".qty-input");
-    const addBtn = itemEl.querySelector(".add-btn");
-    const detailsBtn = itemEl.querySelector(".details-btn");
+    const addBtn = itemEl.querySelector(".add-btn") || itemEl.querySelector(".btn-add");
+    const detailsBtn = itemEl.querySelector(".details-btn") || itemEl.querySelector(".btn-details");
     const qtyBtns = itemEl.querySelectorAll(".qty-btn");
 
     if (!itemId || !qtyInput || !addBtn) return;

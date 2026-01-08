@@ -1420,3 +1420,554 @@ body {
   color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
 }
+
+/* ========================================
+   PARALLAX CAROUSEL MENU SYSTEM
+   ======================================== */
+
+/* ===== PARALLAX MENU SECTION ===== */
+.parallax-menu-section {
+  position: relative;
+  padding: 4rem 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1A1A1A 0%, #0f0f0f 50%, #1A1A1A 100%);
+}
+
+/* Texture/Grain Overlay */
+.parallax-menu-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+/* ===== PARALLAX BACKGROUND LAYERS ===== */
+.parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.parallax-layer {
+  position: absolute;
+  width: 100%;
+  height: 120%;
+  top: -10%;
+  will-change: transform;
+}
+
+.parallax-layer--far {
+  background:
+    radial-gradient(ellipse at 15% 85%, rgba(212, 160, 23, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 15%, rgba(212, 160, 23, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 60%);
+}
+
+.parallax-layer--mid {
+  background:
+    radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.05) 0%, transparent 30%),
+    radial-gradient(circle at 75% 25%, rgba(34, 211, 238, 0.04) 0%, transparent 25%),
+    radial-gradient(circle at 60% 60%, rgba(251, 113, 133, 0.03) 0%, transparent 35%);
+}
+
+.parallax-layer--near {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 20%);
+}
+
+/* ===== MENU WRAPPER ===== */
+.parallax-menu-section .menu-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ===== CAROUSEL ROW ===== */
+.carousel-row {
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.carousel-row:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== CAROUSEL HEADER ===== */
+.carousel-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 0 1.5rem;
+}
+
+.carousel-category-label {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #D4A017;
+  text-shadow: 0 2px 30px rgba(212, 160, 23, 0.4);
+  margin: 0 0 0.5rem 0;
+}
+
+.carousel-category-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ===== CAROUSEL CONTAINER ===== */
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 2rem 3rem;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== MENU CARD ===== */
+.menu-card {
+  flex: 0 0 auto;
+  width: 300px;
+  background: linear-gradient(160deg, #252525 0%, #1a1a1a 100%);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  scroll-snap-align: center;
+
+  /* 3D Setup */
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Base shadow */
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Hover lift effect */
+.menu-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.6),
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(212, 160, 23, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ===== FLOATING IMAGE ===== */
+.menu-card__image-wrapper {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: radial-gradient(circle at center, rgba(50, 50, 50, 0.5) 0%, transparent 70%);
+}
+
+.menu-card__image {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 50%;
+
+  /* Floating 3D effect with drop shadow */
+  transform: translateZ(20px);
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 8px 15px rgba(0, 0, 0, 0.5));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.menu-card:hover .menu-card__image {
+  transform: translateZ(40px) scale(1.08) rotate(3deg);
+  filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.8))
+          drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
+}
+
+/* ===== CARD CONTENT ===== */
+.menu-card__content {
+  padding: 0.75rem 1.25rem 1.5rem;
+}
+
+/* Star Rating */
+.menu-card__rating {
+  margin-bottom: 0.6rem;
+  display: flex;
+  gap: 2px;
+}
+
+.menu-card__rating .star {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.menu-card__rating .star.filled {
+  color: #D4A017;
+  text-shadow: 0 0 8px rgba(212, 160, 23, 0.5);
+}
+
+/* Title with sweep animation */
+.menu-card__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #FFFDD0;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+
+  /* Animation setup */
+  opacity: 0;
+  transform: translateX(-25px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* Description */
+.menu-card__desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.45;
+  margin: 0 0 1rem 0;
+  min-height: 2.9rem;
+
+  /* Staggered animation */
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.5s ease-out 0.1s, transform 0.5s ease-out 0.1s;
+}
+
+/* Footer */
+.menu-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Price */
+.menu-card__price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #D4A017;
+  text-shadow: 0 0 20px rgba(212, 160, 23, 0.3);
+
+  /* Staggered animation */
+  opacity: 0;
+  transform: translateX(-15px);
+  transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
+}
+
+/* Active state - triggers animations */
+.menu-card.is-active .menu-card__title,
+.menu-card.is-active .menu-card__desc,
+.menu-card.is-active .menu-card__price,
+.menu-card:hover .menu-card__title,
+.menu-card:hover .menu-card__desc,
+.menu-card:hover .menu-card__price {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ===== CARD ACTIONS ===== */
+.menu-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Details Button */
+.menu-card .btn-details {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-card .btn-details:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Quantity Control */
+.menu-card .qty-control {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+
+.menu-card .qty-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.menu-card .qty-btn:hover {
+  background: rgba(212, 160, 23, 0.4);
+}
+
+.menu-card .qty-input {
+  width: 28px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Add Button */
+.menu-card .btn-add {
+  background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
+  color: #1A1A1A;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.menu-card .btn-add:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 20px rgba(212, 160, 23, 0.5);
+}
+
+.menu-card .btn-add:active {
+  transform: scale(0.98);
+}
+
+/* ===== CAROUSEL NAVIGATION ARROWS ===== */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(25, 25, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-nav:hover {
+  background: rgba(212, 160, 23, 0.9);
+  color: #1A1A1A;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 25px rgba(212, 160, 23, 0.4);
+}
+
+.carousel-nav svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.carousel-nav--prev {
+  left: 0.5rem;
+}
+
+.carousel-nav--next {
+  right: 0.5rem;
+}
+
+/* ===== DOT INDICATORS ===== */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: #D4A017;
+  transform: scale(1.3);
+  box-shadow: 0 0 12px rgba(212, 160, 23, 0.6);
+}
+
+.carousel-dot:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.45);
+  transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE - PARALLAX CAROUSEL ===== */
+
+/* Hide arrows on mobile/tablet, show on desktop */
+@media (max-width: 991px) {
+  .carousel-nav {
+    display: none;
+  }
+
+  .carousel-track {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Mobile - Full width cards */
+@media (max-width: 576px) {
+  .parallax-menu-section {
+    padding: 3rem 0;
+  }
+
+  .menu-card {
+    width: calc(100vw - 3rem);
+    max-width: 320px;
+  }
+
+  .carousel-track {
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
+
+  .carousel-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .carousel-category-label {
+    font-size: 1.6rem;
+  }
+
+  .carousel-row {
+    margin-bottom: 3rem;
+  }
+
+  .menu-card__image-wrapper {
+    height: 180px;
+    padding: 1rem;
+  }
+
+  .menu-card__image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .menu-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-card__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* Tablet - 2 cards visible */
+@media (min-width: 577px) and (max-width: 991px) {
+  .menu-card {
+    width: calc(50vw - 3rem);
+    min-width: 280px;
+    max-width: 340px;
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 992px) {
+  .carousel-track {
+    padding: 2rem 4rem;
+    gap: 2rem;
+  }
+
+  .menu-card {
+    width: 320px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+  .menu-card {
+    width: 340px;
+  }
+
+  .carousel-track {
+    gap: 2.5rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .menu-card,
+  .menu-card__image,
+  .menu-card__title,
+  .menu-card__desc,
+  .menu-card__price,
+  .carousel-nav,
+  .carousel-dot {
+    transition: none;
+  }
+
+  .menu-card__title,
+  .menu-card__desc,
+  .menu-card__price {
+    opacity: 1;
+    transform: none;
+  }
+
+  .parallax-layer {
+    display: none;
+  }
+}
