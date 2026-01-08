@@ -62,13 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
       heroCta.classList.add("pop-in");
 
       // Trigger ellipse dancing animation when button appears
+      // Animation includes 3s dancing + 2s smooth fade-out built in
       if (ellipses.length) {
         ellipses.forEach(el => el.classList.add('dancing'));
-
-        // Fade out ellipses after 2 seconds of dancing
-        setTimeout(() => {
-          ellipses.forEach(el => el.classList.add('fade-out'));
-        }, 2000);
       }
     }, 2000);
 
