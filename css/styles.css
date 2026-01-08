@@ -1929,12 +1929,12 @@ body {
 .menu-card__rating {
   margin-bottom: 0.75rem;
   display: flex;
-  gap: 3px;
+  gap: 4px;
 }
 
 .menu-card__rating .star {
   color: rgba(255, 255, 255, 0.2);
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   line-height: 1;
   transition: all var(--transition-fast);
 }
@@ -2036,8 +2036,8 @@ body {
 .menu-card .btn-details {
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
-  padding: 0.4rem 0.7rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
@@ -2080,12 +2080,12 @@ body {
 }
 
 .menu-card .qty-input {
-  width: 28px;
+  width: 32px;
   text-align: center;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -2094,8 +2094,8 @@ body {
   background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
   color: #1A1A1A;
   font-weight: 700;
-  font-size: 0.8rem;
-  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 999px;
   border: none;
   cursor: pointer;
