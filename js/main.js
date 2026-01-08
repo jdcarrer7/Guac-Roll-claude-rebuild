@@ -790,6 +790,199 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // ===== NAVBAR SCROLL EFFECT =====
+  const navbar = document.querySelector('.navbar');
+  if (navbar) {
+    let lastScroll = 0;
+    const scrollThreshold = 50;
+
+    function handleNavbarScroll() {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > scrollThreshold) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+
+      lastScroll = currentScroll;
+    }
+
+    window.addEventListener('scroll', handleNavbarScroll, { passive: true });
+    handleNavbarScroll(); // Run once on load
+  }
+
+  // ===== ENHANCED ANIMATIONS MODULE =====
+  (function initEnhancedAnimations() {
+
+    // --- Live Tile Breathing Effect ---
+    const menuCards = document.querySelectorAll('.menu-card');
+
+    // Add tile-alive class with staggered timing
+    menuCards.forEach((card, index) => {
+      // Stagger the animation start
+      setTimeout(() => {
+        card.classList.add('tile-alive');
+      }, index * 200);
+
+      // Pause animation on hover
+      card.addEventListener('mouseenter', () => {
+        card.style.animationPlayState = 'paused';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.animationPlayState = 'running';
+      });
+    });
+
+    // --- Section Reveal on Scroll ---
+    const revealElements = document.querySelectorAll('.carousel-header, .contact-info, .contact-image');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // --- Cart Badge Pulse when has items ---
+    function updateCartBadgeAnimation() {
+      const badge = document.getElementById('cart-toggle-badge');
+      if (badge) {
+        const count = parseInt(badge.textContent, 10) || 0;
+        if (count > 0) {
+          badge.classList.add('has-items');
+        } else {
+          badge.classList.remove('has-items');
+        }
+      }
+    }
+
+    // Watch for badge changes
+    const cartBadge = document.getElementById('cart-toggle-badge');
+    if (cartBadge) {
+      const badgeObserver = new MutationObserver(updateCartBadgeAnimation);
+      badgeObserver.observe(cartBadge, { childList: true, characterData: true, subtree: true });
+      updateCartBadgeAnimation();
+    }
+
+    // --- Staggered Star Rating Animation ---
+    document.querySelectorAll('.menu-card__rating').forEach(rating => {
+      rating.querySelectorAll('.star').forEach((star, index) => {
+        star.style.setProperty('--star-index', index);
+      });
+    });
+
+    // --- Contact Section Stagger Reveal ---
+    const contactDetails = document.querySelector('.contact-details');
+    if (contactDetails) {
+      contactDetails.classList.add('reveal-stagger');
+
+      const contactObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.3 });
+
+      contactObserver.observe(contactDetails);
+    }
+
+    // --- Pre-menu title shimmer effect ---
+    const preMenuTitle = document.querySelector('.pre-menu h2');
+    if (preMenuTitle) {
+      preMenuTitle.classList.add('shimmer-text');
+    }
+
+    // --- Mouse magnetic effect for buttons ---
+    document.querySelectorAll('.contact-btn, .cart-checkout-btn').forEach(btn => {
+      btn.classList.add('magnetic-hover');
+
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+
+    // --- Parallax on mouse move for hero section ---
+    const heroContent = document.querySelector('.hero-content');
+    const heroSection = document.querySelector('.hero');
+
+    if (heroContent && heroSection) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+
+        heroContent.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+      });
+
+      heroSection.addEventListener('mouseleave', () => {
+        heroContent.style.transform = '';
+      });
+    }
+
+    // --- Glow effect following mouse on cards ---
+    menuCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // --- Smooth counter animation for prices ---
+    function animateValue(element, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = start + (end - start) * progress;
+        element.textContent = '$' + current.toFixed(2);
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // --- Intersection Observer for price animations ---
+    const priceElements = document.querySelectorAll('.menu-card__price');
+    const priceObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.animated) {
+          entry.target.dataset.animated = 'true';
+          const finalPrice = parseFloat(entry.target.textContent.replace('$', ''));
+          if (!isNaN(finalPrice)) {
+            animateValue(entry.target, 0, finalPrice, 800);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    priceElements.forEach(el => priceObserver.observe(el));
+
+  })();
+
   // ===== INIT =====
   loadCart();
   loadTip();
