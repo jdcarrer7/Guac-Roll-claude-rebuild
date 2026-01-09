@@ -260,6 +260,173 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   })();
 
+  // ===== MENU SECTION SCROLL SNAPPING =====
+  (function initMenuScrollSnap() {
+    const menuSection = document.querySelector('.parallax-menu-section');
+    const carouselRows = document.querySelectorAll('.carousel-row');
+
+    if (!menuSection || carouselRows.length === 0) return;
+
+    const rows = Array.from(carouselRows);
+    let currentIndex = 0;
+    let isLocked = false;
+    let lockTimeout = null;
+    const LOCK_DURATION = 1000; // Lock duration for normal scrolls
+
+    // Thresholds for scroll intensity
+    const NORMAL_SCROLL_THRESHOLD = 10;   // Minimum to trigger
+    const HARD_SCROLL_THRESHOLD = 150;    // Skip 1 category
+    const VERY_HARD_SCROLL_THRESHOLD = 300; // Skip 2 categories
+
+    // Get the currently active row based on position
+    function getCurrentRowIndex() {
+      let bestIndex = 0;
+      let bestDistance = Infinity;
+
+      rows.forEach((row, index) => {
+        const rect = row.getBoundingClientRect();
+        const distance = Math.abs(rect.top);
+
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+
+      return bestIndex;
+    }
+
+    // Check if we're in the menu section
+    function isInMenuSection() {
+      const rect = menuSection.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      return rect.top <= 100 && rect.bottom >= viewportHeight - 100;
+    }
+
+    // Lock scrolling for a duration
+    function lock(duration = LOCK_DURATION) {
+      isLocked = true;
+      clearTimeout(lockTimeout);
+      lockTimeout = setTimeout(() => {
+        isLocked = false;
+      }, duration);
+    }
+
+    // Snap to a specific row index
+    function snapToIndex(index, lockDuration = LOCK_DURATION) {
+      if (index < 0 || index >= rows.length) return;
+
+      currentIndex = index;
+      lock(lockDuration);
+
+      rows[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Handle wheel events - supports hard scrolling to skip categories
+    menuSection.addEventListener('wheel', (e) => {
+      // Always prevent default in menu section to take full control
+      if (isInMenuSection()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      // If locked, ignore all wheel events
+      if (isLocked || !isInMenuSection()) return;
+
+      const scrollDelta = Math.abs(e.deltaY);
+
+      // Require minimum scroll delta to trigger (prevents trackpad micro-scrolls)
+      if (scrollDelta < NORMAL_SCROLL_THRESHOLD) return;
+
+      // Get current position
+      currentIndex = getCurrentRowIndex();
+
+      // Determine direction
+      const direction = e.deltaY > 0 ? 1 : -1;
+
+      // Calculate how many categories to skip based on scroll intensity
+      let skip = 1;
+      if (scrollDelta >= VERY_HARD_SCROLL_THRESHOLD) {
+        skip = 3;
+      } else if (scrollDelta >= HARD_SCROLL_THRESHOLD) {
+        skip = 2;
+      }
+
+      const targetIndex = currentIndex + (direction * skip);
+
+      // Snap to target category (clamped to valid range)
+      if (targetIndex >= 0 && targetIndex < rows.length) {
+        snapToIndex(targetIndex);
+      } else if (targetIndex < 0) {
+        // Scrolling up past first category - scroll to pre-menu
+        lock();
+        const preMenu = document.querySelector('.pre-menu');
+        if (preMenu) {
+          preMenu.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else if (targetIndex >= rows.length) {
+        // Scrolling down past last category - scroll to contact section
+        lock();
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, { passive: false });
+
+    // Handle keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!isInMenuSection() || isLocked) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        currentIndex = getCurrentRowIndex();
+        const targetIndex = currentIndex + 1;
+        if (targetIndex < rows.length) {
+          snapToIndex(targetIndex);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        currentIndex = getCurrentRowIndex();
+        const targetIndex = currentIndex - 1;
+        if (targetIndex >= 0) {
+          snapToIndex(targetIndex);
+        }
+      }
+    });
+
+    // When entering the menu section from outside, snap to nearest
+    let wasInMenu = false;
+    window.addEventListener('scroll', () => {
+      const inMenu = isInMenuSection();
+
+      if (inMenu && !wasInMenu && !isLocked) {
+        // Just entered menu section - snap to nearest row
+        const nearestIndex = getCurrentRowIndex();
+        const rect = rows[nearestIndex].getBoundingClientRect();
+
+        // Only snap if not already aligned (threshold of 50px)
+        if (Math.abs(rect.top) > 50) {
+          setTimeout(() => {
+            if (!isLocked) snapToIndex(nearestIndex);
+          }, 150);
+        } else {
+          currentIndex = nearestIndex;
+        }
+      }
+
+      wasInMenu = inMenu;
+    }, { passive: true });
+
+    // Also block touchmove to prevent touch scrolling bypassing the snap
+    menuSection.addEventListener('touchmove', (e) => {
+      if (isInMenuSection() && isLocked) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+  })();
+
   // ===== CART PERSISTENCE =====
   function saveCart() {
     try {
@@ -810,6 +977,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.addEventListener('scroll', handleNavbarScroll, { passive: true });
     handleNavbarScroll(); // Run once on load
+  }
+
+  // ===== CART TOGGLE VISIBILITY ON SCROLL =====
+  // Show cart toggle only after scrolling past the hero section
+  const heroSection = document.querySelector('.hero');
+  if (cartToggleBtn && heroSection) {
+    function handleCartToggleVisibility() {
+      const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+      const currentScroll = window.scrollY + window.innerHeight;
+
+      // Show cart toggle when scrolled past the hero section
+      if (window.scrollY > heroBottom - 100) {
+        cartToggleBtn.classList.add('visible');
+      } else {
+        cartToggleBtn.classList.remove('visible');
+      }
+    }
+
+    window.addEventListener('scroll', handleCartToggleVisibility, { passive: true });
+    handleCartToggleVisibility(); // Run once on load
   }
 
   // ===== ENHANCED ANIMATIONS MODULE =====

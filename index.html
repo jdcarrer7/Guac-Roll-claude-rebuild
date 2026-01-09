@@ -8,23 +8,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=8">
 </head>
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <a href="#" class="navbar-logo">
-      <img src="assets/images/guac_and_roll_logo_only.png" alt="Guac & Roll Logo">
-    </a>
-    <ul class="navbar-links">
-      <li><a href="#hero">Home</a></li>
-      <li><a href="#tacos">Menu</a></li>
-      <li><a href="#contact">Contact us</a></li>
-    </ul>
-    <button class="navbar-toggle" id="nav-toggle" aria-label="Menu">
-      &#9776;
-    </button>
+    <div class="navbar-inner">
+      <a href="#" class="navbar-logo">
+        <img src="assets/images/guac_and_roll_logo_only.png" alt="Guac & Roll Logo">
+      </a>
+      <ul class="navbar-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#tacos">Menu</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ul>
+      <button class="navbar-toggle" id="nav-toggle" aria-label="Menu">
+        &#9776;
+      </button>
+    </div>
   </nav>
 
   <!-- HERO SECTION -->
@@ -43,10 +45,18 @@
         </a>
       </div>
     </div>
+    <a href="#pre-menu" class="scroll-indicator">
+      <span class="scroll-text">Scroll</span>
+      <div class="scroll-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </div>
+    </a>
   </section>
 
   <!-- PRE-MENU SECTION -->
-  <section class="pre-menu">
+  <section class="pre-menu" id="pre-menu">
     <div class="pre-menu-content">
       <h2>Mexican Flavor on Tour</h2>
       <img src="assets/images/guac_and_roll_logo_only.png" alt="Guac & Roll" class="pre-menu-logo">
