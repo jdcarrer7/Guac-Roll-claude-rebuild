@@ -2,6 +2,26 @@
    GUAC & ROLL - Main JavaScript
    ======================================== */
 
+// Check for tour mode BEFORE DOMContentLoaded
+// Supports both sessionStorage AND URL parameter (?tour=true)
+const urlParams = new URLSearchParams(window.location.search);
+if (sessionStorage.getItem('autoTour') === 'true' || urlParams.get('tour') === 'true') {
+  window._tourActive = true;
+
+  // Immediately disable scroll snapping before page renders
+  const tourStyle = document.createElement('style');
+  tourStyle.id = 'tour-snap-disable';
+  tourStyle.textContent = `
+    html, body, .hero, .pre-menu, .carousel-row, .contact-section, .parallax-menu-section {
+      scroll-snap-type: none !important;
+      scroll-snap-align: none !important;
+      scroll-snap-stop: normal !important;
+      scroll-behavior: auto !important;
+    }
+  `;
+  document.head.appendChild(tourStyle);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // ===== NUTRITION DATA =====
   const nutritionData = {
@@ -138,6 +158,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const parallaxSection = document.querySelector('.parallax-menu-section');
     if (!parallaxSection) return;
 
+    // Skip parallax effects during tour to prevent jitter
+    const skipParallax = window._tourActive;
+
     // Parallax background layers
     const layerFar = document.querySelector('.parallax-layer--far');
     const layerMid = document.querySelector('.parallax-layer--mid');
@@ -157,12 +180,15 @@ document.addEventListener("DOMContentLoaded", function () {
       ticking = false;
     }
 
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(updateParallax);
-        ticking = true;
-      }
-    }, { passive: true });
+    // Only add parallax scroll listener if not in tour mode
+    if (!skipParallax) {
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }, { passive: true });
+    }
 
     // Card text sweep animations with IntersectionObserver
     const menuCards = document.querySelectorAll('.menu-card');
@@ -260,10 +286,144 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   })();
 
+  // ===== SMOOTH SCROLL UTILITY =====
+  // Custom smooth scroll with easeOutCubic for buttery transitions
+  function smoothScrollTo(targetY, duration = 800) {
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    let startTime = null;
+
+    // easeOutCubic - starts fast, ends slow (feels natural)
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function animate(currentTime) {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  function smoothScrollToElement(element, duration = 800) {
+    if (!element) return;
+    const targetY = element.getBoundingClientRect().top + window.scrollY;
+    smoothScrollTo(targetY, duration);
+  }
+
+  // ===== PRE-MENU SCROLL SNAPPING =====
+  // Ensure pre-menu section is a snap point when scrolling from hero
+  (function initPreMenuScrollSnap() {
+    // Skip if tour is active
+    if (window._tourActive) return;
+
+    const preMenu = document.querySelector('.pre-menu');
+    const heroSection = document.querySelector('.hero');
+    const menuSection = document.querySelector('.parallax-menu-section');
+
+    if (!preMenu || !heroSection) return;
+
+    let isLocked = false;
+    let lockTimeout = null;
+    const LOCK_DURATION = 900;
+    const SCROLL_DURATION = 700;
+
+    function lock(duration = LOCK_DURATION) {
+      isLocked = true;
+      clearTimeout(lockTimeout);
+      lockTimeout = setTimeout(() => {
+        isLocked = false;
+      }, duration);
+    }
+
+    // Check if scrolling down from hero into pre-menu area
+    function isTransitioningFromHero() {
+      const heroRect = heroSection.getBoundingClientRect();
+      const preMenuRect = preMenu.getBoundingClientRect();
+      // Hero is mostly scrolled past but pre-menu isn't fully in view yet
+      return heroRect.bottom < window.innerHeight * 0.3 && preMenuRect.top > -100 && preMenuRect.top < window.innerHeight * 0.5;
+    }
+
+    // Handle wheel events on pre-menu section
+    preMenu.addEventListener('wheel', (e) => {
+      if (isLocked) {
+        e.preventDefault();
+        return;
+      }
+
+      const preMenuRect = preMenu.getBoundingClientRect();
+      const isPreMenuVisible = preMenuRect.top < window.innerHeight * 0.5 && preMenuRect.bottom > window.innerHeight * 0.5;
+
+      if (!isPreMenuVisible) return;
+
+      const scrollDelta = Math.abs(e.deltaY);
+      if (scrollDelta < 10) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const direction = e.deltaY > 0 ? 1 : -1;
+
+      if (direction > 0) {
+        // Scrolling down - go to tacos
+        lock();
+        const tacos = document.getElementById('tacos');
+        if (tacos) {
+          smoothScrollToElement(tacos, SCROLL_DURATION);
+        }
+      } else {
+        // Scrolling up - go to hero
+        lock();
+        smoothScrollToElement(heroSection, SCROLL_DURATION);
+      }
+    }, { passive: false });
+
+    // Snap to pre-menu when entering from hero
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      if (isLocked) {
+        lastScrollY = window.scrollY;
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY;
+
+      if (isTransitioningFromHero() && scrollingDown) {
+        // Snap to pre-menu
+        lock();
+        smoothScrollToElement(preMenu, SCROLL_DURATION);
+      }
+
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+
+    // Handle touch on pre-menu
+    preMenu.addEventListener('touchmove', (e) => {
+      if (isLocked) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+  })();
+
   // ===== MENU SECTION SCROLL SNAPPING =====
   (function initMenuScrollSnap() {
+    // Skip if tour is active
+    if (window._tourActive) return;
+
     const menuSection = document.querySelector('.parallax-menu-section');
     const carouselRows = document.querySelectorAll('.carousel-row');
+    const preMenu = document.querySelector('.pre-menu');
 
     if (!menuSection || carouselRows.length === 0) return;
 
@@ -271,7 +431,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentIndex = 0;
     let isLocked = false;
     let lockTimeout = null;
-    const LOCK_DURATION = 1000; // Lock duration for normal scrolls
+    const LOCK_DURATION = 900; // Lock duration for normal scrolls
+    const SCROLL_DURATION = 700; // Smooth scroll duration
 
     // Thresholds for scroll intensity
     const NORMAL_SCROLL_THRESHOLD = 10;   // Minimum to trigger
@@ -319,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentIndex = index;
       lock(lockDuration);
 
-      rows[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      smoothScrollToElement(rows[index], SCROLL_DURATION);
     }
 
     // Handle wheel events - supports hard scrolling to skip categories
@@ -360,16 +521,15 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (targetIndex < 0) {
         // Scrolling up past first category - scroll to pre-menu
         lock();
-        const preMenu = document.querySelector('.pre-menu');
         if (preMenu) {
-          preMenu.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          smoothScrollToElement(preMenu, SCROLL_DURATION);
         }
       } else if (targetIndex >= rows.length) {
         // Scrolling down past last category - scroll to contact section
         lock();
         const contactSection = document.getElementById('contact');
         if (contactSection) {
-          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          smoothScrollToElement(contactSection, SCROLL_DURATION);
         }
       }
     }, { passive: false });
@@ -1174,4 +1334,90 @@ document.addEventListener("DOMContentLoaded", function () {
   loadCart();
   loadTip();
   updateCartUI();
+
+  // ===== TEMPORARY PORTFOLIO RECORDING TOUR =====
+  // Remove this entire section after recording!
+  if (window._tourActive) {
+    sessionStorage.removeItem('autoTour');
+
+    // Wait for DOM to be fully ready
+    setTimeout(async function runTour() {
+      const pause = ms => new Promise(r => setTimeout(r, ms));
+
+      // Simple smooth scroll
+      const smoothScrollTo = (targetY, duration) => {
+        return new Promise(resolve => {
+          const startY = window.scrollY;
+          const distance = targetY - startY;
+          const startTime = performance.now();
+
+          const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Ease-out curve
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            const newY = Math.round(startY + distance * ease);
+            window.scrollTo(0, newY);
+
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              resolve();
+            }
+          };
+
+          requestAnimationFrame(step);
+        });
+      };
+
+      // Ensure we start at the top
+      window.scrollTo(0, 0);
+
+      console.log('🎬 Portfolio tour starting in 5 seconds...');
+
+      // Wait 5 seconds for hero animations to play
+      await pause(5000);
+
+      const sectionData = [
+        { id: '#pre-menu', name: 'Pre-Menu', pauseAfter: 2000, scrollDuration: 1400 },
+        { id: '#tacos', name: 'Headliner Tacos', pauseAfter: 1500, scrollDuration: 1600 },
+        { id: '#burritos', name: 'Burritos', pauseAfter: 1500, scrollDuration: 1400 },
+        { id: '#bowls', name: 'Bowls', pauseAfter: 1500, scrollDuration: 1400 },
+        { id: '#sides', name: 'Sides', pauseAfter: 1500, scrollDuration: 1400 },
+        { id: '#drinks', name: 'Drinks', pauseAfter: 1500, scrollDuration: 1400 },
+        { id: '#contact', name: 'Contact', pauseAfter: 1500, scrollDuration: 1400 }
+      ];
+
+      for (const section of sectionData) {
+        const el = document.querySelector(section.id);
+        if (el) {
+          // Center the section content in viewport
+          // Get the carousel header to use as anchor point
+          const header = el.querySelector('.carousel-header') || el;
+          const headerRect = header.getBoundingClientRect();
+          const headerTop = headerRect.top + window.scrollY;
+
+          // Position header about 8% from top of viewport for better centering
+          const targetY = headerTop - (window.innerHeight * 0.08);
+          console.log('→ ' + section.name);
+
+          // Reset horizontal carousel scroll to start (left)
+          const carousel = el.querySelector('.carousel-track');
+          if (carousel) {
+            carousel.scrollLeft = 0;
+          }
+
+          await smoothScrollTo(targetY, section.scrollDuration);
+          await pause(section.pauseAfter);
+        }
+      }
+
+      console.log('✅ Tour complete!');
+      window._tourActive = false;
+    }, 200);
+  }
+  // ===== END TEMPORARY TOUR CODE =====
+
 });
