@@ -76,6 +76,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const heroVideo = document.querySelector(".hero-video");
   const ellipses = document.querySelectorAll('.ellipse');
 
+  // Force video to play (handle autoplay restrictions)
+  if (heroVideo) {
+    // Try to play immediately
+    heroVideo.play().catch(function(error) {
+      console.log("Video autoplay prevented, will try on user interaction");
+    });
+
+    // Also try when video has loaded enough data
+    heroVideo.addEventListener('canplay', function() {
+      heroVideo.play().catch(function() {});
+    });
+
+    // Fallback: try on any user interaction
+    document.addEventListener('click', function playOnClick() {
+      heroVideo.play().catch(function() {});
+      document.removeEventListener('click', playOnClick);
+    }, { once: true });
+  }
+
   if (heroCta) {
     // Fade in after 2 seconds
     setTimeout(() => {
@@ -321,10 +340,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ===== PRE-MENU SCROLL SNAPPING =====
-  // Ensure pre-menu section is a snap point when scrolling from hero
+  // DISABLED - scroll snapping removed for smooth scrolling
   (function initPreMenuScrollSnap() {
-    // Skip if tour is active
-    if (window._tourActive) return;
+    return; // Disable scroll snapping entirely
 
     const preMenu = document.querySelector('.pre-menu');
     const heroSection = document.querySelector('.hero');
@@ -417,9 +435,9 @@ document.addEventListener("DOMContentLoaded", function () {
   })();
 
   // ===== MENU SECTION SCROLL SNAPPING =====
+  // DISABLED - scroll snapping removed for smooth scrolling
   (function initMenuScrollSnap() {
-    // Skip if tour is active
-    if (window._tourActive) return;
+    return; // Disable scroll snapping entirely
 
     const menuSection = document.querySelector('.parallax-menu-section');
     const carouselRows = document.querySelectorAll('.carousel-row');

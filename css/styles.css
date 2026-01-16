@@ -2058,13 +2058,11 @@ body {
 
 /* ===== CAROUSEL ROW ===== */
 .carousel-row {
-  height: 100vh;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
-  padding: 2rem 0;
+  padding: 4rem 0;
 }
 
 .carousel-row:last-child {
@@ -2522,9 +2520,9 @@ body {
   }
 
   .carousel-row {
-    min-height: 100vh;
-    height: 100vh;
-    padding: 5rem 0 2rem;
+    min-height: auto;
+    height: auto;
+    padding: 3rem 0 2rem;
     box-sizing: border-box;
   }
 

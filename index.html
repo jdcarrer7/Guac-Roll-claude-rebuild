@@ -8,7 +8,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=28">
+  <link rel="stylesheet" href="css/styles.css?v=32">
+  <link rel="preload" as="video" href="https://f004.backblazeb2.com/file/carrero-biz/Skyfynd+Landing+Page/Tile+Videos/Food+Truck+Assets/Mex+luch+truck.mp4" type="video/mp4">
+  <style>
+    /* Force disable all scroll snapping for smooth scrolling */
+    html, body, .hero, .pre-menu, .carousel-row, .contact-section, .parallax-menu-section {
+      scroll-snap-type: none !important;
+      scroll-snap-align: none !important;
+      scroll-snap-stop: normal !important;
+    }
+    /* Remove fixed height from carousel rows */
+    .carousel-row {
+      height: auto !important;
+      min-height: auto !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -31,8 +45,8 @@
 
   <!-- HERO SECTION -->
   <section class="hero" id="hero">
-    <video class="hero-video" autoplay muted playsinline loop>
-      <source src="https://media.skyfynd.io/Skyfynd+Landing+Page/Tile+Videos/Food+Truck+Web+Tour.mp4" type="video/mp4">
+    <video class="hero-video" autoplay muted playsinline loop preload="auto">
+      <source src="https://f004.backblazeb2.com/file/carrero-biz/Skyfynd+Landing+Page/Tile+Videos/Food+Truck+Assets/Mex+luch+truck.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -54,19 +68,19 @@
       <img src="assets/images/guac_and_roll_logo_only.png" alt="Guac & Roll" class="pre-menu-logo">
       <div class="cards-grid">
         <div class="cards-card">
-          <img src="assets/images/hero/Fish Tacos.png" alt="Fish Tacos">
+          <img src="assets/images/hero/Fish Tacos.jpg" alt="Fish Tacos">
         </div>
         <div class="cards-card">
-          <img src="assets/images/hero/Chicken Tacos.png" alt="Chicken Tacos">
+          <img src="assets/images/hero/Chicken Tacos.jpg" alt="Chicken Tacos">
         </div>
         <div class="cards-card">
           <img src="assets/images/hero/cropped image.png" alt="Guac & Roll Logo">
         </div>
         <div class="cards-card">
-          <img src="assets/images/hero/Carne Asada Burrito.png" alt="Carne Asada Burrito">
+          <img src="assets/images/hero/Carne Asada Burrito.jpg" alt="Carne Asada Burrito">
         </div>
         <div class="cards-card">
-          <img src="assets/images/hero/Flautas.png" alt="Flautas">
+          <img src="assets/images/hero/Flautas.jpg" alt="Flautas">
         </div>
       </div>
     </div>
@@ -97,7 +111,7 @@
             <!-- Cancun Crunch Taco -->
             <article class="menu-card" data-item-id="cancun-crunch" data-price="6.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Cancun Crunch Taco.png" alt="Cancun Crunch Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Cancun Crunch Taco.jpg" alt="Cancun Crunch Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -122,7 +136,7 @@
             <!-- Acapulco Heat -->
             <article class="menu-card" data-item-id="acapulco-heat" data-price="7.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Acapulco Heat.png" alt="Acapulco Heat Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Acapulco Heat.jpg" alt="Acapulco Heat Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -147,7 +161,7 @@
             <!-- Taco Santana -->
             <article class="menu-card" data-item-id="taco-santana" data-price="7.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Taco Santana.png" alt="Taco Santana">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Taco Santana.jpg" alt="Taco Santana">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -172,7 +186,7 @@
             <!-- Mana Mango Taco -->
             <article class="menu-card" data-item-id="mana-mango-taco" data-price="6.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Mana Mango Taco.png" alt="Mana Mango Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Mana Mango Taco.jpg" alt="Mana Mango Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -197,7 +211,7 @@
             <!-- Tulum Verde -->
             <article class="menu-card" data-item-id="tulum-verde" data-price="6.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Tulum Verde-af80-4261-8243-5f450a9d14ab_3.png" alt="Tulum Verde Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Tulum Verde-af80-4261-8243-5f450a9d14ab_3.jpg" alt="Tulum Verde Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -222,7 +236,7 @@
             <!-- CDMX Street Classic -->
             <article class="menu-card" data-item-id="cdmx-street-classic" data-price="6.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/CDMX Taco.png" alt="CDMX Street Classic Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/CDMX Taco.jpg" alt="CDMX Street Classic Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -247,7 +261,7 @@
             <!-- Baja Rocker -->
             <article class="menu-card" data-item-id="baja-rocker" data-price="7.29">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/tacos/Baja Rocker Taco.png" alt="Baja Rocker Taco">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/tacos/Baja Rocker Taco.jpg" alt="Baja Rocker Taco">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -291,7 +305,7 @@
             <!-- The Santana Solo -->
             <article class="menu-card" data-item-id="santana-solo" data-price="11.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/burritos/The Santana Solo.png" alt="The Santana Solo">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/burritos/The Santana Solo.jpg" alt="The Santana Solo">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -316,7 +330,7 @@
             <!-- The Mana Mix Tour -->
             <article class="menu-card" data-item-id="mana-mix-tour" data-price="12.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/burritos/The Mana Mix Tour.png" alt="The Mana Mix Tour">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/burritos/The Mana Mix Tour.jpg" alt="The Mana Mix Tour">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -341,7 +355,7 @@
             <!-- The Acapulco Wave -->
             <article class="menu-card" data-item-id="acapulco-wave" data-price="14.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/burritos/The Acapulco Wave.png" alt="The Acapulco Wave">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/burritos/The Acapulco Wave.jpg" alt="The Acapulco Wave">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -366,7 +380,7 @@
             <!-- The Guadalajara Groove -->
             <article class="menu-card" data-item-id="guadalajara-groove" data-price="11.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/burritos/The Guadalajara Groove.png" alt="The Guadalajara Groove">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/burritos/The Guadalajara Groove.jpg" alt="The Guadalajara Groove">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -391,7 +405,7 @@
             <!-- Viva Veggie Tour -->
             <article class="menu-card" data-item-id="viva-veggie-tour" data-price="10.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/burritos/Viva Veggie Tour.png" alt="Viva Veggie Tour">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/burritos/Viva Veggie Tour.jpg" alt="Viva Veggie Tour">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -435,7 +449,7 @@
             <!-- The Riviera Maya Bowl -->
             <article class="menu-card" data-item-id="riviera-maya-bowl" data-price="12.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/bowls/The Riviera Maya Bowl.png" alt="The Riviera Maya Bowl">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/bowls/The Riviera Maya Bowl.jpg" alt="The Riviera Maya Bowl">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -460,7 +474,7 @@
             <!-- Oaxacan Ember Bowl -->
             <article class="menu-card" data-item-id="oaxacan-ember-bowl" data-price="13.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/bowls/Oxacan Ember Bowl.png" alt="Oaxacan Ember Bowl">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/bowls/Oxacan Ember Bowl.jpg" alt="Oaxacan Ember Bowl">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -485,7 +499,7 @@
             <!-- Rock & Verde Bowl -->
             <article class="menu-card" data-item-id="rock-verde-bowl" data-price="12.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/bowls/Rock & Verde Bowl.png" alt="Rock & Verde Bowl">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/bowls/Rock & Verde Bowl.jpg" alt="Rock & Verde Bowl">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -529,7 +543,7 @@
             <!-- Guac & Roll Chips -->
             <article class="menu-card" data-item-id="guac-roll-chips" data-price="5.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/sides/Guac & Roll Chips.png" alt="Guac & Roll Chips">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/sides/Guac & Roll Chips.jpg" alt="Guac & Roll Chips">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -554,7 +568,7 @@
             <!-- Fiesta Fries -->
             <article class="menu-card" data-item-id="fiesta-fries" data-price="4.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/sides/Fiesta Fries.png" alt="Fiesta Fries">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/sides/Fiesta Fries.jpg" alt="Fiesta Fries">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -579,7 +593,7 @@
             <!-- Cabo Elote Cup -->
             <article class="menu-card" data-item-id="cabo-elote-cup" data-price="4.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/sides/Cabo Elote Cup.png" alt="Cabo Elote Cup">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/sides/Cabo Elote Cup.jpg" alt="Cabo Elote Cup">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -604,7 +618,7 @@
             <!-- Rockstar Salsa Trio -->
             <article class="menu-card" data-item-id="rockstar-salsa-trio" data-price="3.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/sides/Rockstar Salsa Trio.png" alt="Rockstar Salsa Trio">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/sides/Rockstar Salsa Trio.jpg" alt="Rockstar Salsa Trio">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -648,7 +662,7 @@
             <!-- Jalisco Jam Horchata -->
             <article class="menu-card" data-item-id="jalisco-jam-horchata" data-price="3.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/drinks/Jalisco Jam Horchata.png" alt="Jalisco Jam Horchata">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/drinks/Jalisco Jam Horchata.jpg" alt="Jalisco Jam Horchata">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -673,7 +687,7 @@
             <!-- Lime & Roll Agua Fresca -->
             <article class="menu-card" data-item-id="lime-roll-agua" data-price="3.49">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/drinks/Lime & Roll Agua Fresca.png" alt="Lime & Roll Agua Fresca">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/drinks/Lime & Roll Agua Fresca.jpg" alt="Lime & Roll Agua Fresca">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -698,7 +712,7 @@
             <!-- Mango Mana Refresher -->
             <article class="menu-card" data-item-id="mango-mana-refresher" data-price="3.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/drinks/Mango Mana Refresher.png" alt="Mango Mana Refresher">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/drinks/Mango Mana Refresher.jpg" alt="Mango Mana Refresher">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -723,7 +737,7 @@
             <!-- Cafe Tacvba Cold Brew -->
             <article class="menu-card" data-item-id="cafe-tacvba-cold-brew" data-price="4.99">
               <div class="menu-card__image-wrapper">
-                <img class="menu-card__image" src="assets/images/menu/drinks/Cafe Tacvba Cold Brew.png" alt="Cafe Tacvba Cold Brew">
+                <img class="menu-card__image" loading="lazy" src="assets/images/menu/drinks/Cafe Tacvba Cold Brew.jpg" alt="Cafe Tacvba Cold Brew">
               </div>
               <div class="menu-card__content">
                 <div class="menu-card__rating">
@@ -938,6 +952,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=23"></script>
+  <script src="js/main.js?v=26"></script>
 </body>
 </html>
