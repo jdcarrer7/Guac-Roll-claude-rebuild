@@ -464,10 +464,48 @@ body {
   50% { transform: scale(1.03); }
 }
 
-/* ===== SCROLL INDICATOR ===== */
-/* Hidden - not needed for this design */
-.scroll-indicator {
-  display: none !important;
+/* ===== HERO SCROLL INDICATOR ===== */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, color 0.3s ease;
+}
+
+.hero-scroll-indicator.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-scroll-indicator:hover {
+  color: var(--color-gold);
+}
+
+.hero-scroll-indicator span {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+}
+
+.hero-scroll-indicator svg {
+  width: 20px;
+  height: 20px;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
 }
 
 /* ===== PRE-MENU SECTION ===== */

@@ -93,6 +93,19 @@ document.addEventListener("DOMContentLoaded", function () {
       heroVideo.play().catch(function() {});
       document.removeEventListener('click', playOnClick);
     }, { once: true });
+
+    // Pause on last frame when video ends (no loop)
+    heroVideo.addEventListener('ended', function() {
+      // Seek to just before the end to show the last frame
+      heroVideo.currentTime = heroVideo.duration - 0.01;
+      heroVideo.pause();
+
+      // Show scroll indicator after video ends
+      const scrollIndicator = document.getElementById('hero-scroll-indicator');
+      if (scrollIndicator) {
+        scrollIndicator.classList.add('visible');
+      }
+    });
   }
 
   if (heroCta) {
