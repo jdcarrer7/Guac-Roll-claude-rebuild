@@ -295,26 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
 
-      // Touch swipe enhancement (for mobile)
-      let startX = 0;
-      let scrollStart = 0;
-
-      track.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].pageX;
-        scrollStart = track.scrollLeft;
-      }, { passive: true });
-
-      track.addEventListener('touchmove', (e) => {
-        const diff = startX - e.touches[0].pageX;
-        track.scrollLeft = scrollStart + diff;
-      }, { passive: true });
-
-      track.addEventListener('touchend', () => {
-        // Snap to nearest card
-        const cardWidth = cards[0].offsetWidth + 24;
-        const targetIndex = Math.round(track.scrollLeft / cardWidth);
-        track.scrollTo({ left: targetIndex * cardWidth, behavior: 'smooth' });
-      }, { passive: true });
+      // Touch swiping handled natively by CSS scroll-snap
     });
   })();
 
